@@ -27,7 +27,7 @@ const FotosAlojamiento = ({fotos}) => {
         <div className="h-full relative">
             <button className="absolute top-1/2 left-2 -translate-y-1/2 text-3xl font-bold text-white cursor-pointer bg-black rounded-full bg-opacity-20 hover:bg-opacity-30 md:p-1" onClick={goToPrevious}><IoIosArrowBack /></button>
             <button className="absolute top-1/2 right-2 -translate-y-1/2 text-3xl font-bold text-white cursor-pointer bg-black rounded-full bg-opacity-20 hover:bg-opacity-30 md:p-1" onClick={goToNext}><IoIosArrowForward /></button>
-            <img className="w-full h-full object-cover" src={import.meta.env.VITE_UPLOADS_URL + "/" + fotos[currentIndex]} alt="Foto de alojamiento" key={fotos} />
+            <img className="w-full h-full object-cover" src={fotos[currentIndex]} alt="Foto de alojamiento" key={fotos} />
             <div className="flex justify-center my-2 gap-x-2">
                 {fotos.map((foto, fotoIndex) => (
                     <button key={fotoIndex} className="cursor-pointer text-xl font-bold" onClick={() => goToSlide(fotoIndex)} >

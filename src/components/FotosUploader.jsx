@@ -5,47 +5,85 @@ import Asterisco from "./Asterisco";
 import {FaTrash} from "react-icons/fa"
 import {BsStar} from "react-icons/bs"
 import {BsStarFill} from "react-icons/bs"
+import { uploadFile } from "../../firebase/config";
+import Alerta from "./Alerta";
 
 const FotosUploader = ({fotosSubidas, setFotosSubidas}) => {
 
-    const [fotoLink, setFotoLink] = useState([]);
+    const [fotoLink, setFotoLink] = useState("");
+
+    const [alerta, setAlerta] = useState({});
 
     const subirFotoPorLink = async e => {
         e.preventDefault();
+        // try {
+        //     const {data} = await clienteAxios.post('/alojamientos/subir-foto-link', {link: fotoLink})
+        //     setFotosSubidas(prev => {
+        //         return [...prev, data];
+        //     })
+        //     setFotoLink('');
+        // } catch (error){
+        //     console.log(error);
+        // }
+
+        if(fotoLink === ""){
+            setAlerta({
+                msg: "Debes agregar el link de la foto",
+                error: true
+            })
+            return;
+        }
+
+        if(fotosSubidas.includes(fotoLink)){
+            setAlerta({
+                msg: "Ya has agregado esa foto",
+                error: true
+            })
+            return;
+        }
+
         try {
-            const {data} = await clienteAxios.post('/alojamientos/subir-foto-link', {link: fotoLink})
-            setFotosSubidas(prev => {
-                return [...prev, data];
+            await setFotosSubidas(prev => {
+                return [...prev, fotoLink];
             })
             setFotoLink('');
-        } catch (error){
-            console.log(error);
+        } catch (error) {
+            console.log("Error al guardar link de foto");
         }
     }
-    
+
     const subirFotoDispositivo = async e => {
-    // Obtenemos las fotos subidas desde dispositivo local
-    const fotos = e.target.files; 
-    const data = new FormData();
-    for (let i = 0; i < fotos.length; i++) {
-        data.append('fotos', fotos[i]);
-    }
-    await clienteAxios.post('/alojamientos/subir-foto-dispositivo', data, {
-        headers: {
-        "Content-type": "multipart/form-data"
+        // Obtenemos las fotos subidas desde dispositivo local
+        // const fotos = e.target.files; 
+        // const data = new FormData();
+        // for (let i = 0; i < fotos.length; i++) {
+        //     data.append('fotos', fotos[i]);
+        // }
+        // await clienteAxios.post('/alojamientos/subir-foto-dispositivo', data, {
+        //     headers: {
+        //     "Content-type": "multipart/form-data"
+        //     }
+        // })
+        // .then(response => {
+        //     const {data} = response;
+        //     setFotosSubidas(prev => {
+        //     return [...prev, ...data];
+        //     })
+        // })
+
+        try {
+            const url = await uploadFile(e.target.files[0]);
+            setFotosSubidas(prev => {
+                return [...prev, url];
+            })
+        } catch (error) {
+            console.error(error);
         }
-    }).then(response => {
-        const {data} = response;
-        setFotosSubidas(prev => {
-        return [...prev, ...data];
-        })
-    })
     }
 
     const eliminarFoto = (e, link) => {
         e.preventDefault();
         setFotosSubidas([...fotosSubidas.filter(foto => foto !== link)]);
-        // Llamada al endpoint para eliminar la imagen del servidor "/uploads"
     }
 
     const seleccionarFotoPrincipal = (e, link) => {
@@ -53,6 +91,8 @@ const FotosUploader = ({fotosSubidas, setFotosSubidas}) => {
         // Agrego la foto seleccionada al principio del array
         setFotosSubidas([link, ...fotosSubidas.filter(foto => foto !== link)]);
     }
+
+    const {msg} = alerta;
 
   return (
     <div className="mb-2">
@@ -78,10 +118,12 @@ const FotosUploader = ({fotosSubidas, setFotosSubidas}) => {
             </button>
         </div>
 
+        {msg && <Alerta alerta={alerta} />}
+
         <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {fotosSubidas.length > 0 && fotosSubidas.map((link) => (
                 <div key={link} className="relative">
-                    <img src={import.meta.env.VITE_UPLOADS_URL + "/" + link} className="w-full h-28 object-cover rounded-xl"/>
+                    <img src={link} className="w-full h-28 object-cover rounded-xl"/>
                     <button onClick={e => eliminarFoto(e, link)} className="absolute bottom-1 right-1 text-white bg-black bg-opacity-60 p-1.5 rounded-full cursor-pointer" title="Eliminar foto">
                         <FaTrash />
                     </button>
