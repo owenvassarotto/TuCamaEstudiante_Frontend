@@ -10,7 +10,7 @@ const MiAlojamiento = ({alojamiento, eliminarAlojamiento}) => {
                 
         <div className='flex-none'>
             {alojamiento.fotos.length > 0 && (
-            <img className="w-full h-52 md:w-80 md:max-h-full object-cover rounded-md" src={import.meta.env.VITE_UPLOADS_URL + "/" + alojamiento.fotos[0]} alt="Imagen principal de alojamiento"  />
+            <img className="w-full h-52 md:w-80 md:max-h-full object-cover rounded-md" src={alojamiento.fotos[0]} alt="Imagen principal de alojamiento"  />
             )}
         </div>
 

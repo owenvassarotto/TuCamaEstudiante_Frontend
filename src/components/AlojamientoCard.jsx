@@ -33,7 +33,7 @@ const AlojamientoCard = ({alojamiento}) => {
     <>
       <Link to={`/alojamiento/${alojamiento._id}`} className="p-3 border bg-white border-gray-100 shadow-sm shadow-gray-300 rounded-sm w-full relative">
           
-          <img className="object-cover rounded-sm h-56 w-full" src={import.meta.env.VITE_UPLOADS_URL + "/" + alojamiento.fotos[0]} alt="Imagen principal de alojamiento"  />
+          <img className="object-cover rounded-sm h-56 w-full" src={alojamiento.fotos[0]} alt="Imagen principal de alojamiento"  />
           <div className="bg-primario p-2 text-xl absolute top-4 left-4 text-white rounded-full" title={alojamiento.tipoAlojamiento}>
           {alojamiento.tipoAlojamiento === "habitacion" ? <BsFillDoorClosedFill /> : alojamiento.tipoAlojamiento === "departamento" ? <BsFillBuildingFill /> : <BsHouseDoorFill />}
           </div>
